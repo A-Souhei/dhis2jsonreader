@@ -1,5 +1,5 @@
 <?php
-
+error_reporting(0);
 /* 
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -16,12 +16,12 @@ function vprint($arr)
 
 function search($communefromJSON ,  $communefromCSV)
 {
-    $result = '';
+    $result = array();
     foreach($communefromJSON as $c)
     {
-        if($c['name'] == $communefromCSV[0])
+        if(trim($c['name']) == trim($communefromCSV[0]))
         {
-            $result  = implode(';',array_merge($communefromCSV, array($c['id'])));
+            $result  = array($c['id']);
             break;
         }
           
@@ -31,7 +31,7 @@ function search($communefromJSON ,  $communefromCSV)
 
 $jsonUrl ="metadata.json";
 $json = file_get_contents($jsonUrl);
-echo '<pre>';print_r(json_decode($json));echo '</pre>';
+//echo '<pre>';print_r(json_decode($json));echo '</pre>';
 $data = json_decode($json, TRUE);
 //vprint($data['organisationUnits']);
 $orgs = $data['organisationUnits'];
@@ -50,18 +50,27 @@ while(! feof($file))
 {
     $_fl = fgetcsv($file);
     $t = search($lvl5Org, $_fl);
-    if($t != NULL)
-    {
-        $final [] = $t;
-        //vprint($t);
-    }
+    if($t == NULL)    
+        $final [] = implode(';',$_fl);
     else
-        $passfail[] = implode(';',$_fl);
+        $final [] = implode(';',array_merge($_fl,$t));
+    
+    //else
+        //$passfail[] = implode(';',$_fl);
         
 }
 fclose($file);
 
 vprint($final);
 echo '<hr/>';
-vprint($passfail);
+//vprint($passfail);
 
+
+$file = fopen("modifie.csv","w");
+
+foreach ($final as $line)
+{
+    fputcsv($file,explode(';',$line));
+}
+
+fclose($file);
