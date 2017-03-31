@@ -10,18 +10,18 @@ function vprint($arr)
 {
     echo '<pre>';
     //print_r($arr);
-    echo json_encode($arr , JSON_PRETTY_PRINT);
+    print_r($arr);
     echo '</pre>';    
 }
 
 function search($communefromJSON ,  $communefromCSV)
 {
-    $result = array();
+    $result = '';
     foreach($communefromJSON as $c)
     {
         if($c['name'] == $communefromCSV[0])
         {
-            $result [] = array_merge($communefromCSV, array($c['id']));
+            $result  = implode(';',array_merge($communefromCSV, array($c['id'])));
             break;
         }
           
@@ -31,6 +31,7 @@ function search($communefromJSON ,  $communefromCSV)
 
 $jsonUrl ="metadata.json";
 $json = file_get_contents($jsonUrl);
+echo '<pre>';print_r(json_decode($json));echo '</pre>';
 $data = json_decode($json, TRUE);
 //vprint($data['organisationUnits']);
 $orgs = $data['organisationUnits'];
@@ -41,17 +42,26 @@ foreach($orgs as $org)
         $lvl5Org [] = $org;
 }
 
+
 $file = fopen("metadata.csv","r");
 $final = array();
-//while(! feof($file))
+$passfail = array();
+while(! feof($file))
 {
-    //print_r(fgetcsv($file));echo '<br/>';
-    $final [] = search($lvl5Org, $file);
-    
+    $_fl = fgetcsv($file);
+    $t = search($lvl5Org, $_fl);
+    if($t != NULL)
+    {
+        $final [] = $t;
+        //vprint($t);
+    }
+    else
+        $passfail[] = implode(';',$_fl);
+        
 }
-vprint($lvl5Org);
-echo '_______________________________________________________________________';
-fgetcsv($file);
-vprint($file);
 fclose($file);
+
 vprint($final);
+echo '<hr/>';
+vprint($passfail);
+
