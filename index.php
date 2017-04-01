@@ -58,7 +58,7 @@ foreach($orgs as $org)
 }
 
 $fileurl = $_POST['csv'];
-$file = fopen("metadata.csv","r");
+$file = fopen($fileurl ,"r");
 $final = array();
 $passfail = array();
 while(! feof($file))
