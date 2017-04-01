@@ -3,10 +3,12 @@ error_reporting(0);
 ?>
 <h3>Donnees en entrees</h3>
 <h4>
-metadata.json    (import json) <br/>
-metadata.csv    (csv)
+metadata.json (import json) <br/>
+metadata.csv (csv)
 </h4>
 <form action="index.php" method="post">
+    <input type="file" name="json"/>Telecharger JSON<br/>
+    <input type="file" name="csv"/>Telecharger CSV<br/>
     <button type="submit" name="launch">Lancer</button>
 </form>
 
@@ -42,7 +44,7 @@ function search($communefromJSON ,  $communefromCSV)
     return $result;   
 }
 
-$jsonUrl ="metadata.json";
+$jsonUrl =$_POST['json'];
 $json = file_get_contents($jsonUrl);
 //echo '<pre>';print_r(json_decode($json));echo '</pre>';
 $data = json_decode($json, TRUE);
@@ -55,7 +57,7 @@ foreach($orgs as $org)
         $lvl5Org [] = $org;
 }
 
-
+$fileurl = $_POST['csv'];
 $file = fopen("metadata.csv","r");
 $final = array();
 $passfail = array();
@@ -74,12 +76,11 @@ while(! feof($file))
 }
 fclose($file);
 
-vprint($final);
-echo '<hr/>';
+
 //vprint($passfail);
 
 
-$file = fopen("modifie.csv","w");
+$file = fopen("modifiee.csv","w");
 
 foreach ($final as $line)
 {
@@ -87,3 +88,6 @@ foreach ($final as $line)
 }
 
 fclose($file);
+echo '<a href="modifiee.csv">Telecharger le resultat</a>';
+vprint($final);
+echo '<hr/>';
