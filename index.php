@@ -1,11 +1,24 @@
 <?php
 error_reporting(0);
+?>
+<h3>Donnees en entrees</h3>
+<h4>
+metadata.json    (import json) <br/>
+metadata.csv    (csv)
+</h4>
+<form action="index.php" method="post">
+    <button type="submit" name="launch">Lancer</button>
+</form>
+
+<?php
+
 /* 
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
+if(!isset($_POST['launch']))
+    die();
 function vprint($arr)
 {
     echo '<pre>';
