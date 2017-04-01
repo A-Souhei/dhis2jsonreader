@@ -53,7 +53,7 @@ $orgs = $data['organisationUnits'];
 $lvl5Org = array();
 foreach($orgs as $org)
 {
-    if($org['level'] == 5)
+    //if($org['level'] == 5)
         $lvl5Org [] = $org;
 }
 
